@@ -316,18 +316,19 @@ function ProductList({ onHomeClick }) {
                         <p>{item.description}</p>
                         <p>{item.cost}</p>
                         <button
-                            style={{
-                                padding: '10px 15px',
-                                backgroundColor: '#4CAF50',
-                                color: 'white',
-                                border: 'none',
-                                borderRadius: '5px',
-                                cursor: 'pointer'
-                            }}
-                            onClick={() => handleAddToCart(item)}
-                        >
-                            Add to Cart
-                        </button>
+  style={{
+    padding: '10px 15px',
+    backgroundColor: addedToCart[item.name] ? 'gray' : '#4CAF50',
+    color: 'white',
+    border: 'none',
+    borderRadius: '5px',
+    cursor: addedToCart[item.name] ? 'not-allowed' : 'pointer'
+  }}
+  onClick={() => handleAddToCart(item)}
+  disabled={addedToCart[item.name]}
+>
+  {addedToCart[item.name] ? 'Added to Cart' : 'Add to Cart'}
+</button>
                     </div>
                 ))}
             </div>
