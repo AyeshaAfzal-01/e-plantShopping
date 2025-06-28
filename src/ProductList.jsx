@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import './ProductList.css'
 import CartItem from './CartItem';
+import { addItem } from './CartSlice';
+import { useDispatch } from 'react-redux';
+
 function ProductList({ onHomeClick }) {
     const [showCart, setShowCart] = useState(false);
     const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
+    const [addedToCart, setAddedToCart] = useState({});
+    const dispatch = useDispatch();
 
     const plantsArray = [
         {
@@ -252,6 +257,15 @@ function ProductList({ onHomeClick }) {
         e.preventDefault();
         setShowCart(false);
     };
+
+    const handleAddToCart = (product) => {
+        dispatch(addItem(product)); // Dispatch the action to add the product to the cart (Redux action)
+      
+        setAddedToCart((prevState) => ({ // Update the local state to reflect that the product has been added
+          ...prevState, // Spread the previous state to retain existing entries
+          [product.name]: true, // Set the current product's name as a key with value 'true' to mark it as added
+        }));
+      };
     return (
         <div>
             <div className="navbar" style={styleObj}>
@@ -274,7 +288,52 @@ function ProductList({ onHomeClick }) {
             </div>
             {!showCart ? (
                 <div className="product-grid">
-
+                    <div className="product-grid" style={{
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+    gap: '20px',
+    padding: '20px'
+}}>
+    {plantsArray.map((category, i) => (
+        <div key={i} style={{ gridColumn: '1 / -1' }}>
+            <h2 style={{textAlign: 'center'}}>{category.category}</h2>
+            <div style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))',
+                gap: '20px',
+                marginTop: '10px'
+            }}>
+                {category.plants.map((item, j) => (
+                    <div key={j} style={{
+                        border: '1px solid #ccc',
+                        borderRadius: '8px',
+                        padding: '15px',
+                        boxShadow: '2px 2px 10px rgba(0,0,0,0.1)',
+                        textAlign: 'center'
+                    }}>
+                        <img src={item.image} alt={item.name} style={{ width: '100%', height: '200px', objectFit: 'cover', borderRadius: '4px' }} />
+                        <h3>{item.name}</h3>
+                        <p>{item.description}</p>
+                        <p>{item.cost}</p>
+                        <button
+                            style={{
+                                padding: '10px 15px',
+                                backgroundColor: '#4CAF50',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '5px',
+                                cursor: 'pointer'
+                            }}
+                            onClick={() => handleAddToCart(item)}
+                        >
+                            Add to Cart
+                        </button>
+                    </div>
+                ))}
+            </div>
+        </div>
+    ))}
+</div>
 
                 </div>
             ) : (
